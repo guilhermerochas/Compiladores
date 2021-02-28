@@ -1,0 +1,12 @@
+# Inicio de Programa #
+
+limpatela ();
+posicionacursor (1, 9);
+escrevedigito (2);
+escrevedigito (0);
+escrevedigito (1);
+escrevedigito (6);
+fim ();
+
+# Fim de Programa #
+
