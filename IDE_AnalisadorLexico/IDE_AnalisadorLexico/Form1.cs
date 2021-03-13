@@ -29,6 +29,7 @@ namespace IDE_AnalisadorLexico
         public void onSairClick(object sender, EventArgs e)
         {
             cdFonte.PathNome = null;
+            cdFonteTextBox.Text = String.Empty;
             programaIniciado = false;
         }
 
