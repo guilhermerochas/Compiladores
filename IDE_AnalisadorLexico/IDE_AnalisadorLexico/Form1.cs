@@ -1,7 +1,9 @@
 ﻿using IDE_AnalisadorLexico.BLL;
 using IDE_AnalisadorLexico.Models;
+using IDE_AnalisadorLexico.Utils;
 using System;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace IDE_AnalisadorLexico
@@ -19,6 +21,13 @@ namespace IDE_AnalisadorLexico
             IniciarBotoes();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            MeuCompiladorBLL.Conecta();
+            if (Erro.getErro())
+                MessageBox.Show(Erro.getMsg());
+        }
+
         private void IniciarBotoes()
         {
             sairItem.Click += onSairClick;
@@ -29,7 +38,7 @@ namespace IDE_AnalisadorLexico
         public void onSairClick(object sender, EventArgs e)
         {
             cdFonte.PathNome = null;
-            cdFonteTextBox.Text = String.Empty;
+            cdFonteTextBox.Text = string.Empty;
             programaIniciado = false;
         }
 
@@ -47,15 +56,19 @@ namespace IDE_AnalisadorLexico
 
         public void onCompilarClick(object sender, EventArgs e)
         {
-            var result = MeuCompiladorBLL.compilarPrograma(cdFonte);
+            MeuCompiladorBLL.CompilarPrograma(cdFonte);
 
-            if (result != null)
+            if (Erro.getErro())
             {
-                MessageBox.Show($"Erro: {result.Message}");
+                MessageBox.Show(Erro.getMsg());
                 return;
             }
 
-            MessageBox.Show("Programa compilado com sucesso!");
+            StringBuilder textoValidacao = new StringBuilder();
+            foreach(string valor in ExtratoDeTokens.Tokens)
+                textoValidacao.Append($"{valor}\n");
+
+            MessageBox.Show(textoValidacao.ToString());
         }
 
         private void carregarCodigoFonte()
@@ -64,6 +77,13 @@ namespace IDE_AnalisadorLexico
             {
                 cdFonteTextBox.Text = sr.ReadToEnd();
             }
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            MeuCompiladorBLL.Desconecta();
+            if (Erro.getErro())
+                MessageBox.Show(Erro.getMsg());
         }
     }
 }

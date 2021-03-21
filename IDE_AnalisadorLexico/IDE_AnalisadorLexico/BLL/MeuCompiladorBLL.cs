@@ -1,4 +1,6 @@
-﻿using IDE_AnalisadorLexico.Models;
+﻿using IDE_AnalisadorLexico.DAL;
+using IDE_AnalisadorLexico.Models;
+using IDE_AnalisadorLexico.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,57 +10,31 @@ namespace IDE_AnalisadorLexico.BLL
 {
     class MeuCompiladorBLL
     {
-        public static Exception compilarPrograma(ProgramaFonte cdFonte)
+        public static void CompilarPrograma(ProgramaFonte cdFonte)
         {
             try
             {
+                MeuCompiladorDAL.ResetaBanco();
+
                 if (string.IsNullOrWhiteSpace(cdFonte.PathNome))
-                    return new Exception("Arquivo não encontrado!");
+                {
+                    Erro.setErro("erro: Arquivo não encontrado!");
+                }
 
                 using (StreamReader sr = new StreamReader(cdFonte.PathNome))
                 {
-                    Filtro(sr);
+                    AnalisadorLexicoBLL.Filtro(sr);
                 }
 
-                return null;
+                AnalisadorLexicoBLL.Scanner();
             }
             catch(Exception e)
             {
-                return e;
+                Erro.setErro($"erro: {e}");
             }
         }
 
-        public static void Filtro(StreamReader reader)
-        {
-            int tamanhoArquivo = (int)reader.BaseStream.Length;
-            char byteArquivo;
-
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < tamanhoArquivo; i++)
-            {
-                byteArquivo = (char)reader.BaseStream.ReadByte();
-
-                if (byteArquivo == '#')
-                {
-                    do
-                    {
-                        i++;
-                        byteArquivo = (char)reader.BaseStream.ReadByte();
-                    }
-                    while (byteArquivo != '#');
-                }
-                else
-                {
-                    if (byteArquivo != ' ' && byteArquivo != '\t')
-                        sb.Append(byteArquivo.ToString().ToUpper());
-                }
-            }
-
-            using (StreamWriter sw = new StreamWriter($@"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\Desktop\PFTMP.TXT"))
-            {
-                sw.Write(sb.ToString());
-            }
-        }
+        public static void Conecta() => MeuCompiladorDAL.Conecta();
+        public static void Desconecta() => MeuCompiladorDAL.Desconecta();
     }
 }
