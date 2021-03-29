@@ -15,6 +15,7 @@ namespace IDE_AnalisadorLexico.BLL
             try
             {
                 MeuCompiladorDAL.ResetaBanco();
+                StringBuilder textValue;
 
                 if (string.IsNullOrWhiteSpace(cdFonte.PathNome))
                 {
@@ -23,14 +24,15 @@ namespace IDE_AnalisadorLexico.BLL
 
                 using (StreamReader sr = new StreamReader(cdFonte.PathNome))
                 {
-                    AnalisadorLexicoBLL.Filtro(sr);
+                    textValue = AnalisadorLexicoBLL.Filtro(sr);
                 }
 
                 AnalisadorLexicoBLL.Scanner();
+                AnalisadorLexicoBLL.createTempFile(textValue);
             }
             catch(Exception e)
             {
-                Erro.setErro($"erro: {e}");
+                Erro.setErro($"Erro: {e.Message}");
             }
         }
 

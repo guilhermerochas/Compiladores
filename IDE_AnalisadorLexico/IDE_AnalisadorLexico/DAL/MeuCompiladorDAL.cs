@@ -1,6 +1,7 @@
 ﻿using IDE_AnalisadorLexico.Models;
 using IDE_AnalisadorLexico.Utils;
 using System;
+using System.Collections.Generic;
 using System.Data.OleDb;
 
 namespace IDE_AnalisadorLexico.DAL
@@ -51,6 +52,33 @@ namespace IDE_AnalisadorLexico.DAL
 
             strSQL = new OleDbCommand(aux, conn);
             strSQL.ExecuteNonQuery();
+        }
+
+        public static List<Token> obterTokensValidos()
+        {
+            List<Token> tokens = new List<Token>();
+            string aux = @"Select * from TTokens";
+            strSQL = new OleDbCommand(aux, conn);
+            OleDbDataReader reader = strSQL.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    tokens.Add(new Token 
+                    { 
+                        Codigo = reader.GetInt32(0),
+                        NomeToken = reader.GetString(1)
+                    });
+                }
+            }
+
+            var texto = "";
+            tokens.ForEach(t => texto += t.NomeToken + "\n");
+
+            System.Windows.Forms.MessageBox.Show(texto);
+
+            return tokens;
         }
     }
 }
