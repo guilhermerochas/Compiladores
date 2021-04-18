@@ -3,6 +3,7 @@ using IDE_AnalisadorLexico.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
+using System.Windows.Forms;
 
 namespace IDE_AnalisadorLexico.DAL
 {
@@ -54,6 +55,36 @@ namespace IDE_AnalisadorLexico.DAL
             strSQL.ExecuteNonQuery();
         }
 
+        public static List<TTokenValido> PopulaDR()
+        {
+            var tokens = new List<TTokenValido>();
+            
+            string aux = @"Select * from TTokensValidos";
+            strSQL = new OleDbCommand(aux, conn);
+            OleDbDataReader reader = strSQL.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    tokens.Add(new TTokenValido
+                    { 
+                        Codigo = reader.GetInt32(0),
+                        NomeToken = reader.GetValue(1).ToString(),
+                        Tipo = reader.GetValue(2).ToString(),
+                        Linha = reader.GetInt32(3)
+                    });
+                }
+            }
+            
+            return tokens;
+        }
+
+        public static void LeUmTokenValido(TTokenValido tokenValido)
+        {
+            MessageBox.Show($"{tokenValido.Codigo} -> {tokenValido.NomeToken} na linha {tokenValido.Linha}");
+        }
+
         public static List<Token> obterTokensValidos()
         {
             List<Token> tokens = new List<Token>();
@@ -72,11 +103,6 @@ namespace IDE_AnalisadorLexico.DAL
                     });
                 }
             }
-
-            var texto = "";
-            tokens.ForEach(t => texto += t.NomeToken + "\n");
-
-            System.Windows.Forms.MessageBox.Show(texto);
 
             return tokens;
         }

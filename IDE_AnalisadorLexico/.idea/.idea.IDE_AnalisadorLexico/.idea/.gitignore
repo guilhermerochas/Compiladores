@@ -1,0 +1,11 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/projectSettingsUpdater.xml
+/contentModel.xml
+/.idea.IDE_AnalisadorLexico.iml
+# Datasource local storage ignored files
+/../../../../../../../../../../:\Users\guilh\Desktop\Projetos\Compiladores\IDE_AnalisadorLexico\.idea\.idea.IDE_AnalisadorLexico\.idea/dataSources/
+/dataSources.local.xml

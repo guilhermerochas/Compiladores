@@ -24,8 +24,8 @@ namespace IDE_AnalisadorLexico
         #region Windows Form Designer generated code
 
         /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
@@ -41,20 +41,17 @@ namespace IDE_AnalisadorLexico
             // 
             // menuItems
             // 
-            this.menuItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ArquivoItem,
-            this.CompilarItem});
+            this.menuItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {this.ArquivoItem, this.CompilarItem});
             this.menuItems.Location = new System.Drawing.Point(0, 0);
             this.menuItems.Name = "menuItems";
-            this.menuItems.Size = new System.Drawing.Size(901, 24);
+            this.menuItems.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuItems.Size = new System.Drawing.Size(772, 24);
             this.menuItems.TabIndex = 0;
             this.menuItems.Text = "menuItems";
             // 
             // ArquivoItem
             // 
-            this.ArquivoItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.abrirProgramaItem,
-            this.sairItem});
+            this.ArquivoItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.abrirProgramaItem, this.sairItem});
             this.ArquivoItem.Name = "ArquivoItem";
             this.ArquivoItem.Size = new System.Drawing.Size(61, 20);
             this.ArquivoItem.Text = "Arquivo";
@@ -74,8 +71,7 @@ namespace IDE_AnalisadorLexico
             // 
             // CompilarItem
             // 
-            this.CompilarItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.compilarProgramaItem});
+            this.CompilarItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {this.compilarProgramaItem});
             this.CompilarItem.Name = "CompilarItem";
             this.CompilarItem.Size = new System.Drawing.Size(68, 20);
             this.CompilarItem.Text = "Compilar";
@@ -89,28 +85,27 @@ namespace IDE_AnalisadorLexico
             // cdFonteTextBox
             // 
             this.cdFonteTextBox.Enabled = false;
-            this.cdFonteTextBox.Location = new System.Drawing.Point(12, 27);
+            this.cdFonteTextBox.Location = new System.Drawing.Point(10, 23);
             this.cdFonteTextBox.Multiline = true;
             this.cdFonteTextBox.Name = "cdFonteTextBox";
-            this.cdFonteTextBox.Size = new System.Drawing.Size(877, 375);
+            this.cdFonteTextBox.Size = new System.Drawing.Size(752, 326);
             this.cdFonteTextBox.TabIndex = 1;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(901, 414);
+            this.ClientSize = new System.Drawing.Size(772, 359);
             this.Controls.Add(this.cdFonteTextBox);
             this.Controls.Add(this.menuItems);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Compilador";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.menuItems.ResumeLayout(false);
             this.menuItems.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

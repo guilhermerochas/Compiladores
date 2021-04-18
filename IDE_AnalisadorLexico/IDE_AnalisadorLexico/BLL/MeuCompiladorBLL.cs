@@ -27,8 +27,10 @@ namespace IDE_AnalisadorLexico.BLL
                     textValue = AnalisadorLexicoBLL.Filtro(sr);
                 }
 
-                AnalisadorLexicoBLL.Scanner();
                 AnalisadorLexicoBLL.createTempFile(textValue);
+                AnalisadorLexicoBLL.Scanner();
+                
+                AnalisadorSintaticoBLL.testeTokensValidos();
             }
             catch(Exception e)
             {

@@ -65,8 +65,7 @@ namespace IDE_AnalisadorLexico.BLL
                             i++;
                             letraArquivo = (char)sr.BaseStream.ReadByte();
                         }
-                        ExtratoDeTokens.Tokens.Add($"Linha {numeroLinha} (int) => {valor}");
-                        var result = MontaTokenValido(24, valor, "Inteiro", numeroLinha);
+                        var result = MontaTokenValido(valor, "Inteiro", numeroLinha);
 
                         if (result != null)
                             throw result;
@@ -82,8 +81,7 @@ namespace IDE_AnalisadorLexico.BLL
                             i++;
                             letraArquivo = (char)sr.BaseStream.ReadByte();
                         }
-                        ExtratoDeTokens.Tokens.Add($"Linha {numeroLinha} (string) => {valor}");
-                        var result = MontaTokenValido(24, valor, "String", numeroLinha);
+                        var result = MontaTokenValido(valor, "String", numeroLinha);
 
                         if (result != null)
                             throw result;
@@ -93,8 +91,7 @@ namespace IDE_AnalisadorLexico.BLL
 
                     if (char.IsPunctuation(letraArquivo) || char.IsSymbol(letraArquivo))
                     {
-                        ExtratoDeTokens.Tokens.Add($"Linha {numeroLinha} (Delimitador) => {letraArquivo}");
-                        var result = MontaTokenValido(24, letraArquivo.ToString(), "Delimitador", numeroLinha);
+                        var result = MontaTokenValido(letraArquivo.ToString(), "Delimitador", numeroLinha);
 
                         if (result != null)
                             throw result;
@@ -118,21 +115,24 @@ namespace IDE_AnalisadorLexico.BLL
             }
         }
 
-        public static Exception MontaTokenValido(int codigo, string token, string tipo, int linha)
+        public static Exception MontaTokenValido(string token, string tipo, int linha)
         {
+            int? codigo = tipo == "Inteiro" ? 200 : tokensValidos.Find(t => t.NomeToken == token)?.Codigo;
+
+            if (codigo == null)
+                return new Exception($"Token {token} Invalido na linha {linha}!");
+
             if (tokensValidos.Find(t => t.NomeToken == token) != null || tipo == "Inteiro")
             {
-                TokenValido.Codigo = codigo;
+                TokenValido.Codigo = codigo.Value;
                 TokenValido.NomeToken = token;
                 TokenValido.Tipo = tipo;
                 TokenValido.Linha = linha;
                 MeuCompiladorDAL.InsereTokenValido();
                 return null;
             }
-            else
-            {
-                return new Exception($"Token {token} Invalido na linha {linha}!");
-            }
+            
+            return new Exception($"Token {token} Invalido na linha {linha}!");
         }
     }
 }

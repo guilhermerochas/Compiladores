@@ -6,7 +6,7 @@ namespace IDE_AnalisadorLexico.Models
 {
     class Token
     {
-        public int Codigo { get; set; }
+        public int? Codigo { get; set; }
         public string NomeToken { get; set; }
     }
 }

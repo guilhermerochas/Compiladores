@@ -25,7 +25,10 @@ namespace IDE_AnalisadorLexico
         {
             MeuCompiladorBLL.Conecta();
             if (Erro.getErro())
+            {
                 MessageBox.Show(Erro.getMsg());
+                Erro.setErro(false);
+            }
         }
 
         private void IniciarBotoes()
@@ -61,14 +64,10 @@ namespace IDE_AnalisadorLexico
             if (Erro.getErro())
             {
                 MessageBox.Show(Erro.getMsg());
-                return;
+                Erro.setErro(false);
             }
-
-            StringBuilder textoValidacao = new StringBuilder();
-            foreach(string valor in ExtratoDeTokens.Tokens)
-                textoValidacao.Append($"{valor}\n");
-
-            MessageBox.Show(textoValidacao.ToString());
+            else
+                MessageBox.Show("Programa compilado com sucesso!");
         }
 
         private void carregarCodigoFonte()
@@ -84,6 +83,8 @@ namespace IDE_AnalisadorLexico
             MeuCompiladorBLL.Desconecta();
             if (Erro.getErro())
                 MessageBox.Show(Erro.getMsg());
+            
+            Erro.setErro(false);
         }
     }
 }
