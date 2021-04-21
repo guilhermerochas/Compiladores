@@ -30,7 +30,7 @@ namespace IDE_AnalisadorLexico.BLL
                 AnalisadorLexicoBLL.createTempFile(textValue);
                 AnalisadorLexicoBLL.Scanner();
                 
-                AnalisadorSintaticoBLL.testeTokensValidos();
+                AnalisadorSintaticoBLL.AnaliseSintatica();
             }
             catch(Exception e)
             {

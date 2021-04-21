@@ -44,7 +44,7 @@ namespace IDE_AnalisadorLexico.BLL
 
         public static void Scanner()
         {
-            tokensValidos = MeuCompiladorDAL.obterTokensValidos();
+            tokensValidos = MeuCompiladorDAL.ObterTokensValidos();
 
             using (StreamReader sr = new StreamReader($@"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}\Desktop\PFTMP.TXT"))
             {

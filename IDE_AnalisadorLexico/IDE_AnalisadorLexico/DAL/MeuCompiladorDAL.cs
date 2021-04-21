@@ -85,7 +85,7 @@ namespace IDE_AnalisadorLexico.DAL
             MessageBox.Show($"{tokenValido.Codigo} -> {tokenValido.NomeToken} na linha {tokenValido.Linha}");
         }
 
-        public static List<Token> obterTokensValidos()
+        public static List<Token> ObterTokensValidos()
         {
             List<Token> tokens = new List<Token>();
             string aux = @"Select * from TTokens";
