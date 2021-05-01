@@ -87,34 +87,42 @@ namespace IDE_AnalisadorLexico.DAL
             {
                 List<int> dict = new List<int>();
 
-                string aux = $@"SELECT * FROM gabarito where prior = 'bof' and code = '{codigo}'";
+                string aux = @"SELECT * FROM gabarito WHERE previous = @prior AND code = @codigo";
                 strSQL = new OleDbCommand(aux, conn);
+                strSQL.Parameters.Add("prior", "bof");
+                strSQL.Parameters.Add("codigo", codigo);
                 OleDbDataReader reader = strSQL.ExecuteReader();
 
                 if (reader.HasRows)
                 {
-                    string info = reader.GetValue(1).ToString();
-                    string next = reader.GetValue(2).ToString();
+                    reader.Read();
+                    string info = reader.GetValue(2).ToString();
+                    string next = reader.GetValue(3).ToString();
 
                     while (next != "eof")
                     {
                         dict.Add(Convert.ToInt32(info));
                         
-                        aux = $@"SELECT * FROM gabarito where code = {codigo} and prior = '{info}'";
+                        aux = @"SELECT * FROM gabarito WHERE info = @inform and code = @codigo and previous = @prev";
                         strSQL = new OleDbCommand(aux, conn);
+                        strSQL.Parameters.Add("inform", int.Parse(next!));
+                        strSQL.Parameters.Add("codigo", codigo);
+                        strSQL.Parameters.Add("prev", info);
                         reader = strSQL.ExecuteReader();
 
                         if (reader.HasRows)
                         {
-                            info = reader.GetValue(1).ToString();
-                            next = reader.GetValue(2).ToString();
+                            reader.Read();
+                            info = reader.GetValue(2).ToString();
+                            next = reader.GetValue(3).ToString();
                         }
                     }
+                    dict.Add(Convert.ToInt32(info));
                 }
 
                 return dict;
             }
-            catch (Exception _)
+            catch
             {
                 Erro.setErro("Não foi possivel obter os dados do gabarito sintatico");
                 return null;
