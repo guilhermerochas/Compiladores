@@ -10,18 +10,14 @@ namespace IDE_AnalisadorLexico.BLL
     public class AnalisadorSintaticoBLL
     {
         private static List<TTokenValido> tokensValidos = MeuCompiladorDAL.PopulaDR();
-        private static List<int[]> dicionarioSintatico = new List<int[]>
-        {
-            new [] { 0, 100, 101, 103 },
-            new [] { 1, 100, 200, 102, 200, 101, 103 },
-            new [] { 2, 100, 200, 101, 103 },
-            new [] { 3, 100, 101, 103 }
-        };
 
         private static void ValidaSequencia(List<TTokenValido> tokens)
         {
-            int[] dictToken = dicionarioSintatico[tokens[0].Codigo];
-            
+            List<int> dictToken = MeuCompiladorDAL.obterDicionarioTokenValido(tokens[0].Codigo);
+
+            if (dictToken == null)
+                return;
+
             for (int i = 0; i < tokens.Count; i++)
             {
                 if (dictToken[i] != tokens[i].Codigo)
@@ -34,7 +30,7 @@ namespace IDE_AnalisadorLexico.BLL
                 }
             }
         }
-        
+
         public static void AnaliseSintatica()
         {
             int? startLine = tokensValidos.FirstOrDefault()?.Linha;

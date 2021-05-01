@@ -19,7 +19,7 @@ namespace IDE_AnalisadorLexico.DAL
             {
                 conn.Open();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Erro.setErro($"Falha na conexão com o Banco de Dados! {e}");
                 return;
@@ -32,7 +32,7 @@ namespace IDE_AnalisadorLexico.DAL
             {
                 conn.Close();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Erro.setErro($"Falha na desconexão com o Banco de Dados! {e}");
                 return;
@@ -41,7 +41,8 @@ namespace IDE_AnalisadorLexico.DAL
 
         public static void InsereTokenValido()
         {
-            string aux = $@"insert into TTokensValidos(Codigo,Token,Tipo,Linha) values ({TokenValido.Codigo},'{TokenValido.NomeToken}','{TokenValido.Tipo}',{TokenValido.Linha})";
+            string aux =
+                $@"insert into TTokensValidos(Codigo,Token,Tipo,Linha) values ({TokenValido.Codigo},'{TokenValido.NomeToken}','{TokenValido.Tipo}',{TokenValido.Linha})";
 
             strSQL = new OleDbCommand(aux, conn);
             strSQL.ExecuteNonQuery();
@@ -58,7 +59,7 @@ namespace IDE_AnalisadorLexico.DAL
         public static List<TTokenValido> PopulaDR()
         {
             var tokens = new List<TTokenValido>();
-            
+
             string aux = @"Select * from TTokensValidos";
             strSQL = new OleDbCommand(aux, conn);
             OleDbDataReader reader = strSQL.ExecuteReader();
@@ -68,7 +69,7 @@ namespace IDE_AnalisadorLexico.DAL
                 while (reader.Read())
                 {
                     tokens.Add(new TTokenValido
-                    { 
+                    {
                         Codigo = reader.GetInt32(0),
                         NomeToken = reader.GetValue(1).ToString(),
                         Tipo = reader.GetValue(2).ToString(),
@@ -76,13 +77,48 @@ namespace IDE_AnalisadorLexico.DAL
                     });
                 }
             }
-            
+
             return tokens;
         }
 
-        public static void LeUmTokenValido(TTokenValido tokenValido)
+        public static List<int> obterDicionarioTokenValido(int codigo)
         {
-            MessageBox.Show($"{tokenValido.Codigo} -> {tokenValido.NomeToken} na linha {tokenValido.Linha}");
+            try
+            {
+                List<int> dict = new List<int>();
+
+                string aux = $@"SELECT * FROM gabarito where prior = 'bof' and code = '{codigo}'";
+                strSQL = new OleDbCommand(aux, conn);
+                OleDbDataReader reader = strSQL.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    string info = reader.GetValue(1).ToString();
+                    string next = reader.GetValue(2).ToString();
+
+                    while (next != "eof")
+                    {
+                        dict.Add(Convert.ToInt32(info));
+                        
+                        aux = $@"SELECT * FROM gabarito where code = {codigo} and prior = '{info}'";
+                        strSQL = new OleDbCommand(aux, conn);
+                        reader = strSQL.ExecuteReader();
+
+                        if (reader.HasRows)
+                        {
+                            info = reader.GetValue(1).ToString();
+                            next = reader.GetValue(2).ToString();
+                        }
+                    }
+                }
+
+                return dict;
+            }
+            catch (Exception _)
+            {
+                Erro.setErro("Não foi possivel obter os dados do gabarito sintatico");
+                return null;
+            }
         }
 
         public static List<Token> ObterTokensValidos()
@@ -96,8 +132,8 @@ namespace IDE_AnalisadorLexico.DAL
             {
                 while (reader.Read())
                 {
-                    tokens.Add(new Token 
-                    { 
+                    tokens.Add(new Token
+                    {
                         Codigo = reader.GetInt32(0),
                         NomeToken = reader.GetString(1)
                     });
