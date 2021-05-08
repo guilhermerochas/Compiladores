@@ -129,7 +129,7 @@ namespace IDE_AnalisadorLexico.DAL
 
         public static void RemoveDelimitadores()
         {
-            string aux = @"Delete * from TTokensValidos where tipo = 'Delimitador'";
+            string aux = @"Delete * from TTokensValidos where Tipo = 'Delimitador'";
 
             strSQL = new OleDbCommand(aux, conn);
             strSQL.ExecuteNonQuery();
