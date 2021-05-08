@@ -10,7 +10,9 @@ namespace IDE_AnalisadorLexico.BLL
     public class AnalisadorSintaticoBLL
     {
         private static List<TTokenValido> tokensValidos = MeuCompiladorDAL.PopulaDR();
-
+        
+        // Método de verificação do gabarito sintatico, fazendo o processo de carregar na memoria a sequencia
+        // valida do comando e verificar se está correta, retornando um erro ao sistema caso não esteja
         private static void ValidaSequencia(List<TTokenValido> tokens)
         {
             List<int> dictToken = MeuCompiladorDAL.obterDicionarioTokenValido(tokens[0].Codigo);
@@ -30,7 +32,11 @@ namespace IDE_AnalisadorLexico.BLL
                 }
             }
         }
-
+        
+        
+        
+        // Método principal que carrega o processamento da camada de analise sintatica, sendo a responsavel
+        // por conter os metodos de processamento da camada
         public static void AnaliseSintatica()
         {
             int? startLine = tokensValidos.FirstOrDefault()?.Linha;
@@ -40,10 +46,11 @@ namespace IDE_AnalisadorLexico.BLL
             {
                 var reducedTokens = tokensValidos.Where(token => token.Linha == i).ToList();
                 ValidaSequencia(reducedTokens);
+                if (Erro.getErro())
+                    return;
             }
 
-            if (Erro.getErro() == false)
-                MessageBox.Show("Analise Sintatica Realizada com sucesso");
+            MeuCompiladorDAL.RemoveDelimitadores();
         }
     }
 }

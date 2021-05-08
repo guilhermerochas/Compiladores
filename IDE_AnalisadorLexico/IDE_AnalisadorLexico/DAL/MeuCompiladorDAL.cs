@@ -3,7 +3,6 @@ using IDE_AnalisadorLexico.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
-using System.Windows.Forms;
 
 namespace IDE_AnalisadorLexico.DAL
 {
@@ -99,7 +98,7 @@ namespace IDE_AnalisadorLexico.DAL
                     while (next != "eof")
                     {
                         dict.Add(Convert.ToInt32(info));
-                        
+
                         aux = $@"SELECT * FROM gabarito where code = {codigo} and prior = '{info}'";
                         strSQL = new OleDbCommand(aux, conn);
                         reader = strSQL.ExecuteReader();
@@ -114,11 +113,19 @@ namespace IDE_AnalisadorLexico.DAL
 
                 return dict;
             }
-            catch (Exception _)
+            catch (Exception)
             {
                 Erro.setErro("Não foi possivel obter os dados do gabarito sintatico");
                 return null;
             }
+        }
+
+        public static void RemoveDelimitadores()
+        {
+            string aux = @"Delete * from TTokensValidos where tipo = 'Delimitador'";
+
+            strSQL = new OleDbCommand(aux, conn);
+            strSQL.ExecuteNonQuery();
         }
 
         public static List<Token> ObterTokensValidos()
