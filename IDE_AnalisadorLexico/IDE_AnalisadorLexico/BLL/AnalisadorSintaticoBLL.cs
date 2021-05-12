@@ -26,15 +26,12 @@ namespace IDE_AnalisadorLexico.BLL
                 {
                     string msg =
                         $"Token {tokens[i].NomeToken} invalido na linha {tokens[i].Linha}";
-                    MessageBox.Show(msg);
                     Erro.setErro(true);
                     return;
                 }
             }
         }
-        
-        
-        
+
         // Método principal que carrega o processamento da camada de analise sintatica, sendo a responsavel
         // por conter os metodos de processamento da camada
         public static void AnaliseSintatica()

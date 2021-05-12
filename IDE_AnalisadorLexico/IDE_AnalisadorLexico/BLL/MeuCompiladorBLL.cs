@@ -4,6 +4,7 @@ using IDE_AnalisadorLexico.Utils;
 using System;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 
 namespace IDE_AnalisadorLexico.BLL
 {
@@ -21,6 +22,7 @@ namespace IDE_AnalisadorLexico.BLL
                 if (string.IsNullOrWhiteSpace(cdFonte.PathNome))
                 {
                     Erro.setErro("erro: Arquivo não encontrado!");
+                    return;
                 }
 
                 //atribui o filtro de limpeza do codigo fonte ao valor de texto
@@ -38,6 +40,12 @@ namespace IDE_AnalisadorLexico.BLL
 
                 // O método principal da analise sintatica é 
                 AnalisadorSintaticoBLL.AnaliseSintatica();
+                if (Erro.getErro())
+                    return;
+                
+                AnalisadorSemanticoBLL.analiseSemantica();
+                if (!Erro.getErro())
+                    MessageBox.Show("Compilação realizada com sucesso!");
             }
             catch (Exception e)
             {
