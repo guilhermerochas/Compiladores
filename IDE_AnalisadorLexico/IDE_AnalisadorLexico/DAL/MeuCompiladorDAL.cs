@@ -48,6 +48,30 @@ namespace IDE_AnalisadorLexico.DAL
             strSQL.ExecuteNonQuery();
         }
 
+        public static List<TArgLimites> ObterLimitesTokens()
+        {
+            List<TArgLimites> limites = new List<TArgLimites>();
+            string aux = $@"Select * from TArgLimites";
+            strSQL = new OleDbCommand(aux, conn);
+            OleDbDataReader reader = strSQL.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    limites.Add(new TArgLimites
+                    {
+                        Codigo = reader.GetInt32(0),
+                        Posicao = reader.GetInt32(1),
+                        Minimo = reader.GetInt32(2),
+                        Maximo = reader.GetInt32(3)
+                    });
+                }  
+            }
+            
+            return limites;
+        }
+
         public static void ResetaBanco()
         {
             string aux = @"Delete * from TTokensValidos";
@@ -116,6 +140,7 @@ namespace IDE_AnalisadorLexico.DAL
                             next = reader.GetValue(3).ToString();
                         }
                     }
+
                     dict.Add(Convert.ToInt32(info));
                 }
 
@@ -139,20 +164,13 @@ namespace IDE_AnalisadorLexico.DAL
         // Resgatar apenas os tokens que serão necessarios para a analise semantica,
         // ou seja, apenas os tokens que precisam de argumentos para serem analisados
         public static List<TTokenValido> ObterTokensSemanticos()
-        {
-            List<String> tokens = new List<string> { "LIMPATELA", "FIM" };
-            StringBuilder queryBuilder = new StringBuilder(@$"Select * from TTokensValidos where Token <> '{tokens[0]}'");
-
-            for (int i = 1; i < tokens.Count; i++)
-            {
-                queryBuilder.Append(@$" and Token <> '{tokens[i]}'");
-            }
-
+        { 
+            StringBuilder queryBuilder = new StringBuilder(@$"Select * from TTokensValidos");
             List<TTokenValido> tokensSemanticos = new List<TTokenValido>();
 
             strSQL = new OleDbCommand(queryBuilder.ToString(), conn);
             OleDbDataReader reader = strSQL.ExecuteReader();
-            
+
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -169,7 +187,7 @@ namespace IDE_AnalisadorLexico.DAL
 
             return tokensSemanticos;
         }
-        
+
         public static List<Token> ObterTokensValidos()
         {
             List<Token> tokens = new List<Token>();

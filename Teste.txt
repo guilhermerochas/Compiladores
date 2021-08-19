@@ -1,12 +1,7 @@
 # Inicio de Programa #
 
+escreveletra(A, 20);
+pressionatecla();
 limpatela ();
-posicionacursor (1, 24);
-escrevedigito (2);
-escrevedigito (2);
-escrevedigito (1);
-escrevedigito (6);
-fim ();
 
 # Fim de Programa #
-

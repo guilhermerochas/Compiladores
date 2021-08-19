@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using IDE_AnalisadorLexico.DAL;
 using IDE_AnalisadorLexico.Models;
 using IDE_AnalisadorLexico.Utils;
@@ -10,41 +11,32 @@ namespace IDE_AnalisadorLexico.BLL
         public static void analiseSemantica()
         {
             var tokens = MeuCompiladorDAL.ObterTokensSemanticos();
+            var limites = MeuCompiladorDAL.ObterLimitesTokens();
             
             for (int i = 0; i < tokens.Count; i++)
             {
                 if(tokens[i].Tipo != "String")
                     continue;
+                
+                var limiteTokens = limites.Where(l=> l.Codigo == tokens[i].Codigo).ToList();
 
-                var tipoToken = (TipoTokens) tokens[i].Codigo;
-                switch(tipoToken)
+                if (limiteTokens.Count == 0)
+                    continue;
+
+                for (int j = 0; j < limiteTokens.Count; j++)
                 {
-                    case TipoTokens.ESCREVEDIGITO:
+                    int tokenAnalisado = int.TryParse(tokens[(i + j) + 1].NomeToken, out _) ? 
+                        Convert.ToInt32(tokens[(i + j) + 1].NomeToken) :
+                        Convert.ToInt32(Convert.ToChar(tokens[(i + j) + 1].NomeToken));
+                    
+                    if (tokenAnalisado < limiteTokens[j].Minimo || tokenAnalisado > limiteTokens[j].Maximo)
                     {
-                        int primeiroValor = Convert.ToInt32(tokens[i + 1].NomeToken);
-                        if (primeiroValor < 0 || primeiroValor > 9)
-                        {
-                            Erro.setErro($"Não foi possivel obter o tipo do metodo {tokens[i].NomeToken} na linha {tokens[i].Linha}");
-                            return;
-                        }
-                        break;
-                    }
-                    case TipoTokens.POSICIONACURSOR:
-                    {
-                        int primeiroValor = Convert.ToInt32(tokens[i + 1].NomeToken);
-                        int segundoValor = Convert.ToInt32(tokens[i + 2].NomeToken);
-                        if (primeiroValor < 1 || primeiroValor > 80 || 
-                            segundoValor < 1 || segundoValor > 24)
-                        {
-                            Erro.setErro($"Não foi possivel obter o tipo do metodo {tokens[i].NomeToken} na linha {tokens[i].Linha}");
-                            return;
-                        }
-                        break;   
-                    }
-                    default:
-                        Erro.setErro($"Não foi possivel obter o tipo do metodo {tokens[i].NomeToken} na linha {tokens[i].Linha}");
+                        Erro.setErro($"Linha {tokens[i].Linha} fora da faixa de valor ('{tokens[i].NomeToken}')");
                         return;
+                    }
                 }
+
+                i += limiteTokens.Count;
             }
         }
     }

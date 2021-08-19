@@ -65,7 +65,7 @@ namespace IDE_AnalisadorLexico.BLL
                             i++;
                             letraArquivo = (char)sr.BaseStream.ReadByte();
                         }
-                        var result = MontaTokenValido(valor, "Inteiro", numeroLinha);
+                        var result = MontaTokenValido(valor, "Inteiro", numeroLinha, 200);
 
                         if (result != null)
                             throw result;
@@ -81,7 +81,13 @@ namespace IDE_AnalisadorLexico.BLL
                             i++;
                             letraArquivo = (char)sr.BaseStream.ReadByte();
                         }
-                        var result = MontaTokenValido(valor, "String", numeroLinha);
+
+                        Exception result;
+                        
+                        if(valor.Length == 1) 
+                            result = MontaTokenValido(valor, "Letra", numeroLinha, 300);
+                        else
+                            result = MontaTokenValido(valor, "String", numeroLinha);
 
                         if (result != null)
                             throw result;
@@ -115,16 +121,17 @@ namespace IDE_AnalisadorLexico.BLL
             }
         }
 
-        public static Exception MontaTokenValido(string token, string tipo, int linha)
+        public static Exception MontaTokenValido(string token, string tipo, int linha, int? codigo = null)
         {
-            int? codigo = tipo == "Inteiro" ? 200 : tokensValidos.Find(t => t.NomeToken == token)?.Codigo;
+            int? novoCodigo = codigo ?? tokensValidos.Find(t => t.NomeToken == token)?.Codigo;
 
-            if (codigo == null)
+            if (novoCodigo == null)
                 return new Exception($"Token {token} Invalido na linha {linha}!");
 
-            if (tokensValidos.Find(t => t.NomeToken == token) != null || tipo == "Inteiro")
+            if (tokensValidos.Find(t => t.NomeToken == token) != null || 
+                tipo == "Inteiro" || tipo == "Letra")
             {
-                TokenValido.Codigo = codigo.Value;
+                TokenValido.Codigo = novoCodigo.Value;
                 TokenValido.NomeToken = token;
                 TokenValido.Tipo = tipo;
                 TokenValido.Linha = linha;
