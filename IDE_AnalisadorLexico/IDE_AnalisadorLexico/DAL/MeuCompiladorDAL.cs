@@ -21,7 +21,7 @@ namespace IDE_AnalisadorLexico.DAL
             }
             catch (Exception e)
             {
-                Erro.setErro($"Falha na conexão com o Banco de Dados! {e}");
+                Erro.setErro($"Falha na conexão com o Banco de Dados! {e.Message}");
                 return;
             }
         }
@@ -34,7 +34,7 @@ namespace IDE_AnalisadorLexico.DAL
             }
             catch (Exception e)
             {
-                Erro.setErro($"Falha na desconexão com o Banco de Dados! {e}");
+                Erro.setErro($"Falha na desconexão com o Banco de Dados! {e.Message}");
                 return;
             }
         }

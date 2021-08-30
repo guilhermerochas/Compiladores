@@ -31,9 +31,7 @@ namespace IDE_AnalisadorLexico.BLL
                 }
             }
         }
-
-        // Método principal que carrega o processamento da camada de analise sintatica, sendo a responsavel
-        // por conter os metodos de processamento da camada
+        
         public static void AnaliseSintatica()
         {
             int? startLine = tokensValidos.FirstOrDefault()?.Linha;

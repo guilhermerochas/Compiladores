@@ -37,15 +37,20 @@ namespace IDE_AnalisadorLexico.BLL
                 // o scanner é responsavel por fazer uma verificação sequencial dos tipos dos Tokens,
                 // nesse processo os valores são inseridos na base de dados com seus metadados
                 AnalisadorLexicoBLL.Scanner();
+                if (Erro.getErro())
+                    return;
 
-                // O método principal da analise sintatica é 
+                // Método principal que carrega o processamento da camada de analise sintatica, sendo a responsavel
+                // por conter os metodos de processamento da camada
                 AnalisadorSintaticoBLL.AnaliseSintatica();
                 if (Erro.getErro())
                     return;
                 
                 AnalisadorSemanticoBLL.analiseSemantica();
-                if (!Erro.getErro())
-                    MessageBox.Show("Compilação realizada com sucesso!");
+                if (Erro.getErro())
+                    return;
+
+                TradutorBll.GeraExecutavel();
             }
             catch (Exception e)
             {
