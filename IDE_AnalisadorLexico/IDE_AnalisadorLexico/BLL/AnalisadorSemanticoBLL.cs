@@ -18,7 +18,7 @@ namespace IDE_AnalisadorLexico.BLL
                 if(tokens[i].Tipo != "String")
                     continue;
                 
-                var limiteTokens = limites.Where(l=> l.Codigo == tokens[i].Codigo).ToList();
+                var limiteTokens = limites.Where(l => l.Codigo == tokens[i].Codigo).ToList();
 
                 if (limiteTokens.Count == 0)
                     continue;

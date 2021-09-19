@@ -1,57 +1,77 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using IDE_AnalisadorLexico.DAL;
 using IDE_AnalisadorLexico.Models;
+using IDE_AnalisadorLexico.Utils;
 
 namespace IDE_AnalisadorLexico.BLL
 {
     public class TradutorBll
     {
+        private static readonly string PathExecutavel = "./programa.com";
+
         public static void GeraExecutavel()
         {
-            var tokens = MeuCompiladorDAL.ObterTokensSemanticos();
-            var tokensValidos = MeuCompiladorDAL.ObterTokensValidos();
+            List<TTokenValido> tokensValidos = MeuCompiladorDAL.ObterTokensSemanticos();
+            List<TIndLib> indLibs = MeuCompiladorDAL.GetIndicadoresTokens();
+            List<QtdArgumento> qtdArgumentos = MeuCompiladorDAL.GetQtdArgumentos();
 
-            using (FileStream writer = new FileStream($"./programa.com", FileMode.Append, FileAccess.Write))
+            if (File.Exists(PathExecutavel))
             {
-                foreach (var token in tokens)
-                {
-                    Token valido = tokensValidos.FirstOrDefault(t => t.NomeToken == token.NomeToken);
+                File.Delete(PathExecutavel);
+            }
 
-                    if (valido == null)
+            using (FileStream reader = new FileStream("./PONTOCOM.LIB", FileMode.Open, FileAccess.Read))
+            {
+                for (var i = 0; i < tokensValidos.Count; i++)
+                {
+                    if (tokensValidos[i].Codigo >= 100)
                         continue;
 
-                    string nomeExecutavel = $"./Asm/{SelecionaComFile(valido.NomeToken)}";
-                    if (File.Exists(nomeExecutavel))
-                    {
-                        using (FileStream reader = new FileStream(nomeExecutavel, FileMode.Open, FileAccess.Read))
-                        {
-                            int tamanho = (int)reader.Length;
+                    TIndLib indicadorToken = indLibs.FirstOrDefault(il => il.Codigo == tokensValidos[i].Codigo);
 
-                            for (int i = 0; i < tamanho; i++)
+
+                    if (indicadorToken == null)
+                    {
+                        Erro.setErro(
+                            $"Não foi possivel encontrar um indicador com o codigo {tokensValidos[i].Codigo} nessa biblioteca!");
+                        break;
+                    }
+
+                    reader.Position = indicadorToken.Inicio;
+
+                    int qtdTokens = qtdArgumentos.FirstOrDefault(qa => qa.Codigo == tokensValidos[i].Codigo)?.QtdArg ?? 0;
+
+                    using FileStream writer = new FileStream(PathExecutavel, FileMode.Append, FileAccess.Write);
+                    for (int j = 0; j < indicadorToken.Tamanho; j++)
+                    {
+                        byte readByte = (byte)reader.ReadByte();
+                        writer.WriteByte(readByte);
+
+                        if (qtdTokens != 0)
+                        {
+                            reader.ReadByte();
+                            i++;
+                            qtdTokens--;
+                            
+                            bool isNumber = Int32.TryParse(tokensValidos[i].NomeToken, out var tokenNum);
+
+                            if (!isNumber)
                             {
-                                byte readedByte = (byte)reader.ReadByte();
-                                writer.WriteByte(readedByte);
+                                Erro.setErro(
+                                    $"Não foi possivel converter o parámetro {tokensValidos[i].NomeToken} para inteiro!");
+                                break;
                             }
+
+                            writer.WriteByte((byte)tokenNum);
+                            j++;
                         }
                     }
                 }
             }
-        }
-
-        // Helper para retornar qual o arquivo que será acrescentado para o executável.
-        // usando um comando como argumento ele retorna o nome do exe equivalente.
-        private static string SelecionaComFile(string comando)
-        {
-            return comando switch
-            {
-                "ESCREVEDIGITO" => "ED.COM",
-                "LIMPATELA" => "LT.COM",
-                "POSICIONACURSOR" => "PC.COM",
-                "FIM" => "F.COM",
-                _ => string.Empty
-            };
         }
     }
 }

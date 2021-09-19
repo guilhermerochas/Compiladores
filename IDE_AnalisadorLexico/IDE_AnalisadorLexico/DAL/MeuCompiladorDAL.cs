@@ -72,6 +72,28 @@ namespace IDE_AnalisadorLexico.DAL
             return limites;
         }
 
+        public static List<QtdArgumento> GetQtdArgumentos()
+        {
+            List<QtdArgumento> qtdArgumentos = new List<QtdArgumento>();
+            string aux = $@"Select * from TQtdArgumentos";
+            strSQL = new OleDbCommand(aux, conn);
+            OleDbDataReader reader = strSQL.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    qtdArgumentos.Add(new QtdArgumento()
+                    {
+                        Codigo = reader.GetInt32(0),
+                        QtdArg = reader.GetInt32(1),
+                    });
+                }  
+            }
+            
+            return qtdArgumentos;
+        }
+
         public static void ResetaBanco()
         {
             string aux = @"Delete * from TTokensValidos";
@@ -208,6 +230,29 @@ namespace IDE_AnalisadorLexico.DAL
             }
 
             return tokens;
+        }
+
+        public static List<TIndLib> GetIndicadoresTokens()
+        {
+            List<TIndLib> indLibs = new List<TIndLib>();
+            string aux = @"Select * from TIndLib";
+            strSQL = new OleDbCommand(aux, conn);
+            OleDbDataReader reader = strSQL.ExecuteReader();
+            
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    indLibs.Add(new TIndLib
+                    {
+                        Codigo = reader.GetInt32(0),
+                        Inicio = reader.GetInt32(1),
+                        Tamanho = reader.GetInt32(2)
+                    });
+                }
+            }
+
+            return indLibs;
         }
     }
 }

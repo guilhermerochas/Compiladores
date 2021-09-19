@@ -1,11 +1,8 @@
 # Inicio de Programa #
 
 limpatela ();
-posicionacursor (80, 24);
+posicionacursor (2, 2);
 escrevedigito (2);
-escrevedigito (2);
-escrevedigito (1);
-escrevedigito (6);
 fim ();
 
 # Fim de Programa #
